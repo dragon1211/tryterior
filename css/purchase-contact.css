@@ -1,0 +1,223 @@
+#product-contact label,
+#product-contact textarea,
+#product-contact input,
+#product-contact select,
+#product-contact dt,
+#product-contact dd{
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+.wpcf7 {
+  max-width: 550px;
+  margin: 100px auto;
+  padding: 0 20px;
+  color: #333
+}
+.wpcf7 .hissu {
+  font-size: 13px;
+  color: red;
+}
+.wpcf7 .d-flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mb-10 {
+  margin-bottom: 10px;
+}
+
+.mb-15 {
+  margin-bottom: 15px;
+}
+
+.mb-20 {
+  margin-bottom: 20px;
+}
+
+ .sub-section {
+  margin-top: 35px;
+  font-size: 16px;
+}
+
+.wpcf7 input[type="text"], 
+.wpcf7 input[type="date"], 
+.wpcf7 input[type="tel"], 
+.wpcf7 input[type="email"], 
+.wpcf7 textarea, 
+.wpcf7 select {
+  padding: 8px 10px;
+  margin: 10px 0;
+  width: 100%;
+  font-size: 15px;
+}
+
+.wpcf7 textarea{
+  padding: 15px;
+}
+
+.wpcf7 .d-flex.date-range span:not(.wpcf7-not-valid-tip) {
+  width: 47%;
+}
+
+.wpcf7 label {
+  min-width: 160px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.wpcf7 .label-date-range {
+  font-size: 13px;
+}
+
+.wpcf7-list-item {
+  margin: 0 !important;
+} 
+
+.wpcf7-list-item-label {
+  width: 100px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.wpcf7 .wpcf7-not-valid-tip {
+  font-size: 13px;
+}
+
+.wpcf7 .wpcf7-response-output {
+  border: unset !important;
+  color: red;
+  font-size: 16px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.wpcf7 input[type="submit"] {
+  width: 100%;
+  margin-top: 30px;
+  border-style: none;
+  padding: 10px 15px;
+  color: #333;
+  font-size: 16px;
+  background-color: #E5C887;
+  transition: 0.3s;
+}
+
+.wpcf7 input[type="submit"]:hover {
+  cursor: pointer;
+  opacity: .6;
+}
+
+/*  ------------------------------------------
+        purchase contact confirm        
+----------------------------------------  */
+
+.purchase-contact-confirm {
+  max-width: 600px;
+  margin: 100px auto;
+  padding: 0 20px;
+}
+
+.purchase-contact-confirm dl {
+  border-top: 1px dashed #bbb;
+  border-top: 1px dashed #bbb;
+  padding: 18px 10px;
+  font-size: 16px;
+  line-height: 1.5em;
+  display: flex;
+}
+.purchase-contact-confirm dl:nth-last-child(1) {
+  border: unset;
+}
+
+.purchase-contact-confirm dt {
+  width: 35%;
+}
+.purchase-contact-confirm dd {
+  width: 65%;
+}
+
+.purchase-contact-confirm .btn-group {
+  margin-top: 30px;
+  text-align:  center;
+}
+
+.purchase-contact-confirm button{
+  width: 120px;
+  margin: 10px;
+  border-style: none;
+  padding: 8px 15px;
+  color: #333;
+  font-size: 15px;
+  background-color: #E5C887;
+  transition: 0.3s;
+  cursor: pointer
+}
+
+.purchase-contact-confirm button:hover{
+  opacity: .7
+}
+
+
+.success-message {
+  margin-top: 40px;
+  font-size: 24px;
+  line-height: 40px;
+  color: red;
+  text-align: center;
+}
+
+.purchase-contact-confirm .products .value {
+  display: flex;
+  flex-wrap: wrap;
+}
+.purchase-contact-confirm .products .value div {
+  padding: 5px;
+  width: 50%;
+  position: relative;
+}
+.purchase-contact-confirm .products .value img {
+  max-width: 100%;
+  height: 120px;
+  object-fit: fill;
+}
+.purchase-contact-confirm .products .value p {
+  padding: 5px 0;
+  font-size: 14px;
+  line-height: 1.4em;
+}
+
+.purchase-contact-confirm .consult-content .value {
+  white-space: pre-wrap;
+}
+
+
+@media (max-width: 768px) {
+  .wpcf7{
+    max-width: 100%;
+  }
+
+  .purchase-contact-confirm {
+    max-width: 100%;
+  }
+
+  /* .purchase-contact-confirm .products .value div{
+    width: 100%;
+  } */
+
+  .wpcf7 .d-flex.date-range {
+    justify-content: start;
+  }
+
+  .wpcf7 .d-flex.date-range span:not(.wpcf7-not-valid-tip) {
+    width: unset;
+  }  
+
+  .wpcf7 input[type="date"]{
+    width: 200px;
+  }
+  .wpcf7 select{
+    width: 250px;
+    margin-left: 30px;
+  }
+}
