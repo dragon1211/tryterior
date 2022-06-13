@@ -29,9 +29,10 @@
       is_post_type_archive('product') || 
       is_singular('product') || 
       is_tax('product_category') || 
-      is_page('contact') || 
-      is_page('lpa') || 
-      is_page('item') ):  ?>
+      is_tax('product_brand') ||
+      is_page('lpa') || is_page('lpb') || is_page('dev') || 
+      is_page('contact') || is_page('item')
+      ):  ?>
     <link rel="stylesheet" href="/css/case.css" />
     <?php if (is_mobile()) { ?><link rel="stylesheet" href="/css/sp_case.css" /><?php } ?>
     <link rel="stylesheet" href="/css/purchase-contact.css" />
@@ -55,5 +56,22 @@
     <?php endif; ?>
     <?php endif; ?>
 
+
+
+  <head>
+  <!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5C3LQQB');</script>
+<!-- End Google Tag Manager -->
+  </head>
+
+
   </head>
   <body>
+  <!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5C3LQQB"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->

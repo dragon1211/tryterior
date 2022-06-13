@@ -1,3 +1,9 @@
+<?php /**
+ * Template Name: product
+ */
+?>
+
+
 <?php get_template_part( 'page-content/product/product.header' ); ?>
 
 <section id="product">
@@ -5,7 +11,7 @@
 		<div class="category__list">
 			<p>カテコリー</p>
 			<li>
-				<a href="/lpa/item" class = <?php if(!isset($term)) echo "active"; ?> >  
+				<a href="/dev/item" class = <?php if(!isset($term)) echo "active"; ?> >  
 					ALL
 				</a>
 			</li>
@@ -22,6 +28,24 @@
 					<a href="<?php echo get_term_link($cat->term_id); ?>" 
 						class = "<?php if(strcmp($term, $cat->slug) == 0) echo "active"; ?>" >  
 							<?php echo $cat->name ?> 
+					</a>
+				</li>
+			<? } ?>
+
+			<p>ブランド</p>
+			<?php 
+				if(!isset($term)) $term = '';
+				$brands = get_terms( [
+					'taxonomy'     => "product_brand",
+					'order'        => 'ASC',
+					'orderby'      => 'date',
+				] );
+				foreach($brands as $brand){
+			?>
+				<li>
+					<a href="<?php echo get_term_link($brand->term_id); ?>" 
+						class = "<?php if(strcmp($term, $brand->slug) == 0) echo "active"; ?>" >  
+							<?php echo $brand->name ?> 
 					</a>
 				</li>
 			<? } ?>
@@ -46,6 +70,12 @@
 						'relation' => 'OR',
 						array(
 							'taxonomy' => 'product_category',
+							'terms' => $term,
+							'field' => 'slug',
+							'operator' => 'IN'
+						),
+						array(
+							'taxonomy' => 'product_brand',
 							'terms' => $term,
 							'field' => 'slug',
 							'operator' => 'IN'
