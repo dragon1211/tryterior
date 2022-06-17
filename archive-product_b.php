@@ -9,13 +9,19 @@
 	<div class="content">
 		<div class="category__list">
 			<p>カテゴリ</p>
+			<?php 
+				$term = "";
+				if(($_GET["brand"] === null || $_GET["brand"] === "") == false)
+					$term = $_GET["brand"];
+				if(($_GET["category"] === null || $_GET["category"] === "") == false)
+					$term = $_GET["category"];
+			?>
 			<li>
-				<a href="/lpb/item" class = <?php if(!isset($term)) echo "active"; ?> >  
+				<a href="/lpb/item" class = <?php if($term === "") echo "active"; ?> >  
 					ALL
 				</a>
 			</li>
 			<?php 
-				if(!isset($term)) $term = '';
 				$categories = get_terms( [
 					'taxonomy'     => "product_category",
 					'order'        => 'ASC',
@@ -24,7 +30,7 @@
 				foreach($categories as $cat){
 			?>
 				<li>
-					<a href="<?php echo get_term_link($cat->term_id); ?>" 
+					<a href="<?php echo '?category='.$cat->slug; ?>" 
 						class = "<?php if(strcmp($term, $cat->slug) == 0) echo "active"; ?>" >  
 							<?php echo $cat->name ?> 
 					</a>
@@ -34,7 +40,7 @@
 
 
 		<?php
-			if($term === ''){
+			if($term === ""){
 				$args = array(
 					'post_type' => 'product',
 					'posts_per_page' => -1,
@@ -112,7 +118,7 @@
 
 <section id="product-detail">
 	<?php
-		if($term === ''){
+		if($term === ""){
 			$args = array(
 				'post_type' => 'product',
 				'posts_per_page' => -1,

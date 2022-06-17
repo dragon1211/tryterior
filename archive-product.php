@@ -10,13 +10,19 @@
 	<div class="content">
 		<div class="category__list">
 			<p>カテコリー</p>
+			<?php 
+				$term = "";
+				if(($_GET["brand"] === null || $_GET["brand"] === "") == false)
+					$term = $_GET["brand"];
+				if(($_GET["category"] === null || $_GET["category"] === "") == false)
+					$term = $_GET["category"];
+			?>
 			<li>
-				<a href="/dev/item" class = <?php if(!isset($term)) echo "active"; ?> >  
+				<a href="/dev/item" class = <?php if($term === "") echo "active"; ?> >  
 					ALL
 				</a>
 			</li>
 			<?php 
-				if(!isset($term)) $term = '';
 				$categories = get_terms( [
 					'taxonomy'     => "product_category",
 					'order'        => 'ASC',
@@ -25,7 +31,7 @@
 				foreach($categories as $cat){
 			?>
 				<li>
-					<a href="<?php echo get_term_link($cat->term_id); ?>" 
+					<a href="<?php echo '?category='.$cat->slug; ?>" 
 						class = "<?php if(strcmp($term, $cat->slug) == 0) echo "active"; ?>" >  
 							<?php echo $cat->name ?> 
 					</a>
@@ -34,7 +40,6 @@
 
 			<p>ブランド</p>
 			<?php 
-				if(!isset($term)) $term = '';
 				$brands = get_terms( [
 					'taxonomy'     => "product_brand",
 					'order'        => 'ASC',
@@ -43,7 +48,7 @@
 				foreach($brands as $brand){
 			?>
 				<li>
-					<a href="<?php echo get_term_link($brand->term_id); ?>" 
+					<a href="<?php echo '?brand='.$brand->slug; ?>" 
 						class = "<?php if(strcmp($term, $brand->slug) == 0) echo "active"; ?>" >  
 							<?php echo $brand->name ?> 
 					</a>
@@ -84,9 +89,9 @@
 				);
 			}
 		?>
+
 		<?php $wp_query = new WP_Query( $args ); ?>
 		<?php if( $wp_query->have_posts() ) : ?>
-
 			<div class="product__list p-slider is-pc">
 				<?php $loopcounter = -1; while ($wp_query->have_posts()) : $wp_query->the_post(); $loopcounter ++; ?>
 					<div class="position-relative">
@@ -166,7 +171,7 @@
 
 <section id="product-detail">
 	<?php
-		if($term === ''){
+		if($term === ""){
 			$args = array(
 				'post_type' => 'product',
 				'posts_per_page' => -1,
@@ -183,6 +188,12 @@
 					'relation' => 'OR',
 					array(
 						'taxonomy' => 'product_category',
+						'terms' => $term,
+						'field' => 'slug',
+						'operator' => 'IN'
+					),
+					array(
+						'taxonomy' => 'product_brand',
 						'terms' => $term,
 						'field' => 'slug',
 						'operator' => 'IN'
