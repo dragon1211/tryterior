@@ -262,12 +262,16 @@
 		$('.product__list.p-slider.is-pc').slick({
 			rows: 3,
 			slidesPerRow: 3,
-			dots: true
+			dots: true,
+			prevArrow: '<div class="d-none"></div>',
+			nextArrow: '<div class="d-none"></div>'
 		});
 		$('.product__list.p-slider.is-sp').slick({
 			rows: 3,
 			slidesPerRow: 2,
 			dots: true,
+			prevArrow: '<div class="d-none"></div>',
+			nextArrow: '<div class="d-none"></div>'
 		});
 	}
 

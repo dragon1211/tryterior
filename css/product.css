@@ -27,7 +27,7 @@ body{
   padding: 100px 15px 50px;
   background: white;
   font-size: 14px;
-  max-width: 1010px;
+  max-width: 1110px;
   width: 100%;
   margin: auto;
   color: black;
@@ -66,8 +66,8 @@ body{
 /* ---------- product category   ----------- */
 
 #product .category__list{
-  width: 150px;
-  margin-right: 10px;
+  width: 200px;
+  margin-right: 20px;
 }
 
 #product .category__list p{
@@ -103,7 +103,7 @@ body{
 #product .product__list{
   display: flex;
   flex-wrap: wrap;
-  width: calc(100% - 160px);
+  width: calc(100% - 200px);
 }
 
 #product .product__list .slick-list{
