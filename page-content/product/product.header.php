@@ -15,6 +15,7 @@
     <script type="text/javascript" src="/js/jquery.js"></script>
     <script type="text/javascript" src="/js/function.js"></script>
     <script type="text/javascript" src="/js/ofi.min.js"></script>
+    <script type="text/javascript" src="/js/custom.js"></script>
     <script>
       $(function(){
         objectFitImages('.ofi');
@@ -118,10 +119,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
 
+<div class="page-top js-pageTop"><span></span></div>
 <header>
-        <div class="header flex">
-            <div class="header__l">
-                <h1><img src="https://tryterior.com/lpa/img/logo.png" class="header-logo" alt="トライテリア TRY-TERIOR"></h1>
-            </div>
-        </div>
+  <div class="header flex">
+    <div class="header__l">
+      <h1><img src="https://tryterior.com/lpa/img/logo.png" class="header-logo" alt="トライテリア TRY-TERIOR"></h1>
+    </div>
+  </div>
 </header>
