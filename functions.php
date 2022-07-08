@@ -60,6 +60,35 @@ function pickUpFirstImage($key) {
 		return wp_get_attachment_image($arr,'full');
 	}
 }
+function getProductSize($key) {
+	$arr = post_custom($key);
+	if (is_array($arr)) {
+		return "<div style='max-width: 200px'>".
+		"<div class='d-flex justify-content-between'><span>(W) </span><span>".$arr[0]."mm</span></div>".
+		"<div class='d-flex justify-content-between'><span>(D) </span><span>".$arr[1]."mm</span></div>".
+		"<div class='d-flex justify-content-between'><span>(S) </span><span>".$arr[2]."mm</span></div>".
+		"<div class='d-flex justify-content-between'><span>(SH)</span><span>".$arr[3]."mm</span></div>"
+		."</div>";
+	} else {
+		return "￥".$arr;
+	}
+}
+function getProductPrice($key) {
+	$arr = post_custom($key);
+	if (is_array($arr)) {
+		return "￥".number_format($arr[0])." ~ ￥".number_format($arr[1]);
+	} else {
+		return "￥".number_format($arr);
+	}
+}
+function getProductBrand() {
+	$cats = get_the_terms(get_the_ID(),'product_brand');
+	$ret = array();
+	foreach ((array)$cats as $cat) {
+		array_push($ret,$cat->name);
+	}
+	return implode(' / ',$ret);
+}
 function get_roomtype() {
 	$cats = get_the_terms(get_the_ID(),'casetype');
 	$ret = array();
@@ -81,14 +110,6 @@ function get_casestyle() {
 	$ret = array();
 	foreach ((array)$cats as $cat) {
 		if ($cat->parent==4) array_push($ret,$cat->name);
-	}
-	return implode(' / ',$ret);
-}
-function get_product_brand() {
-	$cats = get_the_terms(get_the_ID(),'product_brand');
-	$ret = array();
-	foreach ((array)$cats as $cat) {
-		array_push($ret,$cat->name);
 	}
 	return implode(' / ',$ret);
 }
