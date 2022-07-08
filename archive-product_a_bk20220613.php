@@ -9,19 +9,13 @@
 	<div class="content">
 		<div class="category__list">
 			<p>カテゴリ</p>
-			<?php 
-				$term = "";
-				if(($_GET["brand"] === null || $_GET["brand"] === "") == false)
-					$term = $_GET["brand"];
-				if(($_GET["category"] === null || $_GET["category"] === "") == false)
-					$term = $_GET["category"];
-			?>
 			<li>
-				<a href="/lpa/item" class = <?php if($term === "") echo "active"; ?> >  
+				<a href="/lpa/item" class = <?php if(!isset($term)) echo "active"; ?> >  
 					ALL
 				</a>
 			</li>
 			<?php 
+				if(!isset($term)) $term = '';
 				$categories = get_terms( [
 					'taxonomy'     => "product_category",
 					'order'        => 'ASC',
@@ -30,7 +24,7 @@
 				foreach($categories as $cat){
 			?>
 				<li>
-					<a href="<?php echo '?category='.$cat->slug; ?>" 
+					<a href="<?php echo get_term_link($cat->term_id); ?>" 
 						class = "<?php if(strcmp($term, $cat->slug) == 0) echo "active"; ?>" >  
 							<?php echo $cat->name ?> 
 					</a>
@@ -40,7 +34,7 @@
 
 
 		<?php
-			if($term === ""){
+			if($term === ''){
 				$args = array(
 					'post_type' => 'product',
 					'posts_per_page' => -1,
@@ -65,12 +59,12 @@
 				);
 			}
 		?>
-		<?php $i = 0; ?>
 		<?php $wp_query = new WP_Query( $args ); ?>
 		<?php if( $wp_query->have_posts() ) : ?>
-			<div class="product__list p-slider">
+
+			<div class="product__list p-slider is-pc">
 				<?php $loopcounter = -1; while ($wp_query->have_posts()) : $wp_query->the_post(); $loopcounter ++; ?>
-					<div class="position-relative d-none">
+					<div class="position-relative">
 						<a	href="#<?php echo get_post_field('post_name',get_post())?>"
 							class="product__card"
 							onclick="SelectProduct('#<?php echo get_post_field('post_name',get_post())?>')"
@@ -84,11 +78,7 @@
 									}
 								?>
 								<div class="product__image">
-									<?php if($i < ((is_mobile())? 6 : 9)): ?>
 									<div class="img" style="background-image:url(<?php echo $imgs[0]; ?>);"></div>
-									<?php else: ?>
-									<div class="img lazybg" data-lazybg="<?php echo $imgs[0]; ?>" style="background-image:url(http://tryterior.com/wp-content/uploads/2022/06/logo.png)"></div>
-									<?php endif; ?>
 								</div>
 								<div class="product__desp">
 									<p class="brand"><?php echo get_product_brand(); ?></p>
@@ -104,7 +94,41 @@
 							/>
 						</div>
 					</div>
-					<?php $i++; ?>
+				<?php endwhile; ?>
+			</div>
+			
+			<div class="product__list p-slider is-sp">
+				<?php $loopcounter = -1; while ($wp_query->have_posts()) : $wp_query->the_post(); $loopcounter ++; ?>
+					<div class="position-relative">
+						<a	href="#<?php echo get_post_field('post_name',get_post())?>"
+							class="product__card"
+							onclick="SelectProduct('#<?php echo get_post_field('post_name',get_post())?>')"
+						>
+							<div class="product__item" id=<? echo 'item'.$loopcounter ?>>
+								<?php
+									$arr = post_custom('Image');
+									foreach ((array)$arr as $img) {
+										$imgs = wp_get_attachment_image_src($img,'full');
+										break;
+									}
+								?>
+								<div class="product__image">
+									<div class="img" style="background-image:url(<?php echo $imgs[0]; ?>);"></div>
+								</div>
+								<div class="product__desp">
+									<p class="brand"><?php echo get_product_brand(); ?></p>
+									<h3 class="name"><?php the_title(); ?></h3>
+									<p class="price"><?php echo strip_tags(post_custom('Price')); ?></p>
+								</div>
+							</div>
+						</a>
+						<div class="chbox">
+							<input type="checkbox" 
+								id=<? echo 'chbox'.$loopcounter; ?> 
+								onchange="ChangeCartStatus(<?echo $loopcounter?>, 'chbox')"
+							/>
+						</div>
+					</div>
 				<?php endwhile; ?>
 			</div>
 
@@ -117,7 +141,7 @@
 
 <section id="product-detail">
 	<?php
-		if($term === ""){
+		if($term === ''){
 			$args = array(
 				'post_type' => 'product',
 				'posts_per_page' => -1,
@@ -142,12 +166,11 @@
 			);
 		}
 	?>
-		<?php $i = 0; ?>
 		<?php $wp_query = new WP_Query( $args ); ?>
 			<?php if( $wp_query->have_posts() ) : ?>
 				<?php $loopcounter = -1; while ($wp_query->have_posts()) : $wp_query->the_post(); $loopcounter ++;?> 
 				<!-- product detail -->
-					<div class="detail-view d-none" id=<?php echo get_post_field('post_name',get_post())?>>
+					<div class="detail-view" id=<?php echo get_post_field('post_name',get_post())?>>
 						<div class="case-wrap">
 							<div id="cased1">
 								<div id="cased11"><?php echo pickUpImages('Image'); ?></div>
@@ -176,17 +199,15 @@
 										id=<?echo 'cart'.$loopcounter;?> 
 										onchange="ChangeCartStatus(<?echo $loopcounter?>, 'cart')"
 									/>
-									<label for=<?echo 'cart'.$loopcounter;?> >お試し商品に追加</label>&nbsp;&nbsp;<br>
-									<p>※1点まで追加できます。</p>
+									<label for=<?echo 'cart'.$loopcounter;?> >カートに入れる</label>
 								</div>
 							</div>
 						</div>	
 					</div>
 				<!-- end -->
-				<?php $i++; ?>
 				<?php endwhile; ?>
-			<?php else: ?>
-			<?php endif; ?>
+		<?php else: ?>
+	<?php endif; ?>
 
 
 	<div id="cased4" style="margin-top: 100px">
@@ -200,14 +221,17 @@
 
 <script>
 	const breakPoint = 768;
-	const slider = $('.product__list.p-slider');
-	let isMobile;
 
-	function SlickProduct(isMobile){
-		slider.slick({
+	function SlickProduct(){
+		$('.product__list.p-slider.is-pc').slick({
 			rows: 3,
-			slidesPerRow: (isMobile) ? 2 : 3,
+			slidesPerRow: 3,
 			dots: true
+		});
+		$('.product__list.p-slider.is-sp').slick({
+			rows: 3,
+			slidesPerRow: 2,
+			dots: true,
 		});
 	}
 
@@ -236,7 +260,7 @@
 	}
 
 	function GotoForm(){
-		var chboxes = $(`.slick-slide:not(.slick-cloned) input[type="checkbox"]`);
+		var chboxes = $(`${window.innerWidth <= breakPoint ? '.is-sp' : '.is-pc'}  .slick-slide:not(.slick-cloned) input[type="checkbox"]`);
 		let query = [];
 		let count = 0;
 		for(let i = 0; i < chboxes.length; i ++){
@@ -256,7 +280,7 @@
 	}
 
 	function ChangeCartStatus(index, flag) {
-		let chbox = `.slick-slide:not(.slick-cloned) input[type="checkbox"]#chbox${index}`;
+		let chbox = `${window.innerWidth <= breakPoint ? '.is-sp' : '.is-pc'}  .slick-slide:not(.slick-cloned) input[type="checkbox"]#chbox${index}`;
 		let cart = `#cart${index}`;
 		if(flag == 'chbox'){
 			$(cart).prop('checked', $(chbox).prop('checked'))
@@ -299,24 +323,21 @@
 
 	$(function(){
 		// ------------------- initial  slider  ------------------ //
-		const ua = navigator.userAgent;
-		isMobile = window.innerWidth <= breakPoint || ua.indexOf('iPhone') > -1 || ua.indexOf('Android') > -1 || ua.indexOf('Mobile') > -1 || ua.indexOf('iPad') > -1
-		SlickProduct(isMobile);
-		$('.position-relative').removeClass('d-none');
+		SlickProduct();
 
-		$(window).on('orientationchange resize',function(){
+		const ua = navigator.userAgent;
+		if( window.innerWidth <= breakPoint || ua.indexOf('iPhone') > -1 || ua.indexOf('Android') > -1 || ua.indexOf('Mobile') > -1 || ua.indexOf('iPad') > -1){
+			$('.product__list.p-slider.is-pc').hide();
+		} else {
+			$('.product__list.p-slider.is-sp').hide();
+		}
+		$(window).on('resize',function(){
 			if( window.innerWidth <= breakPoint){
-				if(!isMobile) {
-					slider.slick('unslick')
-					SlickProduct(true);
-					isMobile != isMobile;
-				}
+				$('.product__list.p-slider.is-pc').hide();
+				$('.product__list.p-slider.is-sp').show();
 			} else {
-				if(isMobile) {
-					slider.slick('unslick')
-					SlickProduct(false);
-					isMobile != isMobile;
-				}
+				$('.product__list.p-slider.is-sp').hide();   
+				$('.product__list.p-slider.is-pc').show();   
 			}
 		});
 		// -------------------------------------------------------- //
@@ -327,31 +348,12 @@
 			SelectProduct('#'+$(`#product-detail .detail-view`).first().attr('id'));
 		}
 
+		
 		triggerPageTop();
 		clickPageTop();
 
 		$(window).scroll(function() {
 			triggerPageTop();
-		});
-	});
-	let lazyObjectObserver = new IntersectionObserver(function(entries, observer) {
-        entries.forEach(function(entry) {
-            if (entry.isIntersecting) {
-                let lazyObject = entry.target;
-                if(!(lazyObject.dataset.lazybg == '')){
-                    bgsrc = lazyObject.dataset.lazybg;
-                    lazyObject.style.backgroundImage = 'url('+bgsrc+')';
-                    lazyObject.classList.remove("lazybg");
-                    lazyObject.dataset.lazybg = '';
-                    lazyObjectObserver.unobserve(lazyObject);
-                }
-            }
-        });
-    },{ rootMargin: "0px 0px 0px 0px" });
-	document.addEventListener("DOMContentLoaded", function() {
-		let lazyObjects = [].slice.call(document.querySelectorAll(".lazybg"));
-		lazyObjects.forEach(function(lazyObject) {
-				lazyObjectObserver.observe(lazyObject);
 		});
 	});
 </script>

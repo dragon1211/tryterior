@@ -42,10 +42,10 @@
 <script>
 	$(function(){
 		$('.purchase-contact-confirm').hide();
+        $('.wpcf7-form textarea#consult-content').val(null);
 		$('.wpcf7-form textarea#consult-content').prop('disabled', true);
-		$('.wpcf7-form textarea#consult-content').val(null);
-		
-		
+	
+    
 		$('.wpcf7-form input[type="submit"]').click( e => {
 			e.preventDefault();
 			try{

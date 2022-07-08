@@ -1,5 +1,5 @@
 <?php /**
- * Template Name: product_a
+ * Template Name: product_b
  */
   ?>
 
@@ -9,19 +9,13 @@
 	<div class="content">
 		<div class="category__list">
 			<p>カテゴリ</p>
-			<?php 
-				$term = "";
-				if(($_GET["brand"] === null || $_GET["brand"] === "") == false)
-					$term = $_GET["brand"];
-				if(($_GET["category"] === null || $_GET["category"] === "") == false)
-					$term = $_GET["category"];
-			?>
 			<li>
-				<a href="/lpa/item" class = <?php if($term === "") echo "active"; ?> >  
+				<a href="/lpb/item" class = <?php if(!isset($term)) echo "active"; ?> >  
 					ALL
 				</a>
 			</li>
 			<?php 
+				if(!isset($term)) $term = '';
 				$categories = get_terms( [
 					'taxonomy'     => "product_category",
 					'order'        => 'ASC',
@@ -30,7 +24,7 @@
 				foreach($categories as $cat){
 			?>
 				<li>
-					<a href="<?php echo '?category='.$cat->slug; ?>" 
+					<a href="<?php echo get_term_link($cat->term_id); ?>" 
 						class = "<?php if(strcmp($term, $cat->slug) == 0) echo "active"; ?>" >  
 							<?php echo $cat->name ?> 
 					</a>
@@ -40,7 +34,7 @@
 
 
 		<?php
-			if($term === ""){
+			if($term === ''){
 				$args = array(
 					'post_type' => 'product',
 					'posts_per_page' => -1,
@@ -68,6 +62,7 @@
 		<?php $i = 0; ?>
 		<?php $wp_query = new WP_Query( $args ); ?>
 		<?php if( $wp_query->have_posts() ) : ?>
+
 			<div class="product__list p-slider">
 				<?php $loopcounter = -1; while ($wp_query->have_posts()) : $wp_query->the_post(); $loopcounter ++; ?>
 					<div class="position-relative d-none">
@@ -87,7 +82,7 @@
 									<?php if($i < ((is_mobile())? 6 : 9)): ?>
 									<div class="img" style="background-image:url(<?php echo $imgs[0]; ?>);"></div>
 									<?php else: ?>
-									<div class="img lazybg" data-lazybg="<?php echo $imgs[0]; ?>" style="background-image:url(http://tryterior.com/wp-content/uploads/2022/06/logo.png)"></div>
+									<div class="img lazybg" data-lazybg="<?php echo $imgs[0]; ?>" style="background-image:url(https://placehold.jp/250x150.png)"></div>
 									<?php endif; ?>
 								</div>
 								<div class="product__desp">
@@ -117,7 +112,7 @@
 
 <section id="product-detail">
 	<?php
-		if($term === ""){
+		if($term === ''){
 			$args = array(
 				'post_type' => 'product',
 				'posts_per_page' => -1,
@@ -147,7 +142,7 @@
 			<?php if( $wp_query->have_posts() ) : ?>
 				<?php $loopcounter = -1; while ($wp_query->have_posts()) : $wp_query->the_post(); $loopcounter ++;?> 
 				<!-- product detail -->
-					<div class="detail-view d-none" id=<?php echo get_post_field('post_name',get_post())?>>
+				<div class="detail-view d-none" id=<?php echo get_post_field('post_name',get_post())?>>
 						<div class="case-wrap">
 							<div id="cased1">
 								<div id="cased11"><?php echo pickUpImages('Image'); ?></div>
@@ -176,8 +171,7 @@
 										id=<?echo 'cart'.$loopcounter;?> 
 										onchange="ChangeCartStatus(<?echo $loopcounter?>, 'cart')"
 									/>
-									<label for=<?echo 'cart'.$loopcounter;?> >お試し商品に追加</label>&nbsp;&nbsp;<br>
-									<p>※1点まで追加できます。</p>
+									<label for=<?echo 'cart'.$loopcounter;?> >カートに入れる</label>
 								</div>
 							</div>
 						</div>	
@@ -185,8 +179,8 @@
 				<!-- end -->
 				<?php $i++; ?>
 				<?php endwhile; ?>
-			<?php else: ?>
-			<?php endif; ?>
+		<?php else: ?>
+	<?php endif; ?>
 
 
 	<div id="cased4" style="margin-top: 100px">
@@ -252,7 +246,7 @@
 			alert("選択した商品はありません。");
 			return;
 		}
-		window.location.href = "/lpa/contact?products=" + encodeURIComponent(JSON.stringify(query));
+		window.location.href = "/lpb/contact?products=" + encodeURIComponent(JSON.stringify(query));
 	}
 
 	function ChangeCartStatus(index, flag) {

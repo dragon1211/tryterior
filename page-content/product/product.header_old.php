@@ -4,13 +4,10 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title><?php if ( is_search() || is_404()) { ?>
-	  <?php } ?>
-	  <?php if(is_page('item')) { ?>
-      <?php wp_title('商品一覧 | トライテリア'); ?>
-	  <?php } ?>
-	 <?php  if(is_page('contact')) { ?>
-      <?php wp_title('お問合せフォーム | トライテリア'); ?>
-	  <?php } ?></title>
+      <?php } else { ?>
+      <?php wp_title(' | ', true, 'right'); ?>
+      <?php } ?>
+      <?php bloginfo('name'); ?></title>
       <?php wp_deregister_script( 'jquery' ); ?>
     <script type="text/javascript" src="/js/jquery.js"></script>
     <script type="text/javascript" src="/js/function.js"></script>
@@ -20,50 +17,6 @@
         objectFitImages('.ofi');
       });
     </script>
-
-<style type="text/css">
-.header {
-  padding: 0 3rem;
-  min-height: 0rem;
-  position: relative;
-  width: 100%;
-  top: 0;
-  left: 0;
-  z-index: 99;
-  background: #fff;
-}
-.header-logo {
-  width: 32.4rem;
-}
-
-.memo {
-  font-size: 2rem;
-   text-align: center;
-   margin-top: 6rem;
-}
-
-@media screen and (max-width: 750px) {
-  .header {
-    padding: 0 1.7rem;
-    min-height: 11.4rem;
-  }
-  .header-logo {
-    width: 25.4rem;
-  }
-
-.memo {
-  font-size: 2.7rem;
-   text-align: left;
-   margin-top: 6rem;
-   margin-left: 2.5rem;
-   margin-right: 2.5rem;
-}
-
-}
-
-
-
-</style>
 
     <link rel="stylesheet" type="text/css" href="/css/common.css">
     <?php if (is_mobile()): ?><link rel="stylesheet" href="/css/sp_common.css" /><?php endif; ?>
@@ -78,7 +31,7 @@
       is_tax('product_category') || 
       is_tax('product_brand') ||
       is_page('lpa') || is_page('lpb') || is_page('dev') || 
-      is_page('contact') || is_page('item') || is_page('ocform') || is_page('ocform_new')
+      is_page('contact') || is_page('item') || is_page('ocform')
       ):  ?>
     <link rel="stylesheet" href="/css/case.css" />
     <?php if (is_mobile()) { ?><link rel="stylesheet" href="/css/sp_case.css" /><?php } ?>
@@ -117,11 +70,3 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5C3LQQB"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
-
-<header>
-        <div class="header flex">
-            <div class="header__l">
-                <h1><img src="https://tryterior.com/lpa/img/logo.png" class="header-logo" alt="トライテリア TRY-TERIOR"></h1>
-            </div>
-        </div>
-</header>

@@ -177,7 +177,8 @@
 										id=<?echo 'cart'.$loopcounter;?> 
 										onchange="ChangeCartStatus(<?echo $loopcounter?>, 'cart')"
 									/>
-									<label for=<?echo 'cart'.$loopcounter;?> >カートに入れる</label>
+									<label for=<?echo 'cart'.$loopcounter;?> >フィッティング商品に追加</label> &nbsp;&nbsp;
+									<p>※3点まで追加できます。</p>
 								</div>
 							</div>
 						</div>	
