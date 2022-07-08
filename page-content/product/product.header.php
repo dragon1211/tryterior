@@ -43,6 +43,14 @@
    margin-top: 6rem;
 }
 
+.d-flex{
+  display: flex;
+}
+
+.justify-content-between {
+  justify-content: space-between;
+}
+
 @media screen and (max-width: 750px) {
   .header {
     padding: 0 1.7rem;
