@@ -7,52 +7,117 @@
 
 <section id="product">
 	<div class="content">
-		<div class="category__list">
-			<p>カテゴリ</p>
-			<?php 
-				$term = "";
-				if(($_GET["brand"] === null || $_GET["brand"] === "") == false)
-					$term = $_GET["brand"];
-				if(($_GET["category"] === null || $_GET["category"] === "") == false)
-					$term = $_GET["category"];
-			?>
-			<li>
-				<a href="/lpa/item" class = <?php if($term === "") echo "active"; ?> >  
-					ALL
-				</a>
-			</li>
-			<?php 
-				$categories = get_terms( [
-					'taxonomy'     => "product_category",
-					'order'        => 'ASC',
-					'orderby'      => 'date',
-				] );
-				foreach($categories as $cat){
-			?>
-				<li>
-					<a href="<?php echo '?category='.$cat->slug; ?>" 
-						class = "<?php if(strcmp($term, $cat->slug) == 0) echo "active"; ?>" >  
-							<?php echo $cat->name ?> 
-					</a>
-				</li>
-			<? } ?>
-		</div>
+		<div class="left-side__menu">			
+			<!-- accordion -->
+			<div class="accordion accordion-flush" id="leftMenuAccordion">
+				<div class="accordion-item">
+					<h2 class="accordion-header">
+						<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accordion-item-category">
+							カテゴリ
+						</button>
+					</h2>
+					<div id="accordion-item-category" class="accordion-collapse collapse">
+						<ul class="accordion-body">
+							<?php 
+								$term = "";
+								if(isset($_GET["brand"]))	$term = $_GET["brand"];
+								if(isset($_GET["category"])) $term = $_GET["category"];
 
+								$orderByPrice = $_GET["orderByPrice"] ?? "";
+
+								$orderPriceASCQuery = http_build_query( array_merge( $_GET, array( 'orderByPrice' => 'ASC' ) ) ); 
+								$orderPriceDESCQuery = http_build_query( array_merge( $_GET, array( 'orderByPrice' => 'DESC' ) ) ); 
+							?>
+							<li>
+								<a href="/lpa/item" class = <?php if($term === "") echo "active"; ?> >  
+									ALL
+								</a>
+							</li>
+							<?php 
+								$categories = get_terms( [
+									'taxonomy'     => "product_category",
+									'order'        => 'ASC',
+									'orderby'      => 'date',
+								] );
+								foreach($categories as $cat){
+							?>
+								<li>
+									<a href="<?php echo '?category='.$cat->slug; ?>" 
+										class = "<?php if(strcmp($term, $cat->slug) == 0) echo "active"; ?>" >  
+											<?php echo $cat->name ?> 
+									</a>
+								</li>
+							<? } ?>
+						</ul>
+					</div>
+				</div>
+				<div class="accordion-item">
+					<h2 class="accordion-header">
+						<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accordion-item-brand">
+							ブランド
+						</button>
+					</h2>
+					<div id="accordion-item-brand" class="accordion-collapse collapse">
+						<ul class="accordion-body">
+							<?php 
+								$brands = get_terms( [
+									'taxonomy'     => "product_brand",
+									'order'        => 'ASC',
+									'orderby'      => 'date',
+								] );
+								foreach($brands as $brand){
+							?>
+								<li>
+									<a href="<?php echo '?brand='.$brand->slug; ?>" 
+										class = "<?php if(strcmp($term, $brand->slug) == 0) echo "active"; ?>" >  
+											<?php echo $brand->name ?> 
+									</a>
+								</li>
+							<? } ?>
+						</ul>
+					</div>
+				</div>
+				<div class="accordion-item">
+					<h2 class="accordion-header">
+						<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#accordion-item-order">
+							金額順
+						</button>
+					</h2>
+					<div id="accordion-item-order" class="accordion-collapse collapse show">
+						<ul class="accordion-body d-flex">
+							<li style="margin-right: 15px">
+								<a 	href=<?php echo "?".$orderPriceDESCQuery?>
+									class=<?php if(strcmp($_GET['orderByPrice'], "DESC") == 0) echo 'active'; ?>
+								>安い順
+								</a>
+							</li>
+							<li>
+								<a  href=<?php echo "?".$orderPriceASCQuery?>
+								 	class=<?php if(strcmp($_GET['orderByPrice'], "ASC") == 0) echo 'active'; ?>
+								>高い順</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<!-- end accordion -->
+		</div>
+		
 
 		<?php
-			if($term === ""){
+			if($term === ''){
 				$args = array(
 					'post_type' => 'product',
 					'posts_per_page' => -1,
+					'orderby' => 'publish_date',
 					'order' => 'DESC',
-					'post_status' => 'publish'
 				);
 			} else {
 				$args = array(
 					'post_type' => 'product',
 					'posts_per_page' => -1,
+					'orderby' => 'publish_date',
 					'order' => 'DESC',
-					'post_status' => 'publish',
 					'tax_query' => array(
 						'relation' => 'OR',
 						array(
@@ -61,8 +126,20 @@
 							'field' => 'slug',
 							'operator' => 'IN'
 						),
+						array(
+							'taxonomy' => 'product_brand',
+							'terms' => $term,
+							'field' => 'slug',
+							'operator' => 'IN'
+						),
 					)
 				);
+			}
+
+			if($orderByPrice != '') {
+				$args['orderby'] = 'meta_value_num';
+				$args['order'] = $orderByPrice;
+				array_merge($args, ['meta_key' => '_description']);
 			}
 		?>
 		<?php $i = 0; ?>
@@ -91,9 +168,9 @@
 									<?php endif; ?>
 								</div>
 								<div class="product__desp">
-									<p class="brand"><?php echo get_product_brand(); ?></p>
+									<p class="brand"><?php echo getProductBrand(); ?></p>
 									<h3 class="name"><?php the_title(); ?></h3>
-									<p class="price"><?php echo strip_tags(post_custom('Price')); ?></p>
+									<p class="price"><?php echo getProductPrice('Price'); ?></p>
 								</div>
 							</div>
 						</a>
@@ -110,90 +187,72 @@
 
 		<?php else: ?>
 		<?php endif; ?>
-		
+
 	</div>
 </section>
 
 
 <section id="product-detail">
-	<?php
-		if($term === ""){
-			$args = array(
-				'post_type' => 'product',
-				'posts_per_page' => -1,
-				'order' => 'DESC',
-				'post_status' => 'publish'
-			);
-		} else {
-			$args = array(
-				'post_type' => 'product',
-				'posts_per_page' => -1,
-				'order' => 'DESC',
-				'post_status' => 'publish',
-				'tax_query' => array(
-					'relation' => 'OR',
-					array(
-						'taxonomy' => 'product_category',
-						'terms' => $term,
-						'field' => 'slug',
-						'operator' => 'IN'
-					),
-				)
-			);
-		}
-	?>
-		<?php $i = 0; ?>
-		<?php $wp_query = new WP_Query( $args ); ?>
-			<?php if( $wp_query->have_posts() ) : ?>
-				<?php $loopcounter = -1; while ($wp_query->have_posts()) : $wp_query->the_post(); $loopcounter ++;?> 
-				<!-- product detail -->
-					<div class="detail-view d-none" id=<?php echo get_post_field('post_name',get_post())?>>
-						<div class="case-wrap">
-							<div id="cased1">
-								<div id="cased11"><?php echo pickUpImages('Image'); ?></div>
-								<div id="cased11_thumbnail">
-									<?php echo pickUpThumbnailImages('Image'); ?>
-								</div>
-							</div>
-							<div id="cased2">
-								<dl class="brand">
-									<dt>ブランド名</dt>
-									<dd><?php echo get_product_brand(); ?></dd>
-								</dl>
-								<h3 id="cased21"><?php the_title(); ?></h3>
-								<dl id="cased22">
-									<dt>サイズ</dt>
-									<dd><?php echo post_custom('Size'); ?></dd>
-									<dt>素材</dt>
-									<dd><?php echo post_custom('Material'); ?></dd>
-									<dt>価格</dt>
-									<dd><i><strong><?php echo post_custom('Price'); ?></strong></i></dd>
-									<dt>商品説明</dt>
-									<dd style="white-space: break-spaces"><?php echo post_custom('Description'); ?></dd>
-								</dl>
-								<div class="cart-btn">
-									<input type="checkbox" 
-										id=<?echo 'cart'.$loopcounter;?> 
-										onchange="ChangeCartStatus(<?echo $loopcounter?>, 'cart')"
-									/>
-									<label for=<?echo 'cart'.$loopcounter;?> >お試し商品に追加</label>&nbsp;&nbsp;<br>
-									<p>※1点まで追加できます。</p>
-								</div>
-							</div>
-						</div>	
+	<?php $wp_query = new WP_Query( $args ); ?>
+		<?php if( $wp_query->have_posts() ) : ?>
+			<?php $loopcounter = -1; while ($wp_query->have_posts()) : $wp_query->the_post(); $loopcounter ++;?> 
+			<!-- Modal -->
+			<div class="modal fade" id=<?php echo get_post_field('post_name',get_post())?> data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered">
+					<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">商品詳細</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
-				<!-- end -->
-				<?php $i++; ?>
-				<?php endwhile; ?>
-			<?php else: ?>
-			<?php endif; ?>
-
+					<div class="modal-body">
+						<!-- product detail -->
+							<div class="detail-view" id=<?php echo get_post_field('post_name',get_post())?>>
+								<div class="case-wrap">
+									<div id="cased1">
+										<div id="cased11"><?php echo pickUpImages('Image'); ?></div>
+										<div id="cased11_thumbnail">
+											<?php echo pickUpThumbnailImages('Image'); ?>
+										</div>
+									</div>
+									<div id="cased2">
+										<dl class="brand">
+											<dt>ブランド名</dt>
+											<dd><?php echo getProductBrand(); ?></dd>
+										</dl>
+										<h3 id="cased21"><?php the_title(); ?></h3>
+										<dl id="cased22">
+											<dt>サイズ</dt>
+											<dd><?php echo getProductSize('Size'); ?></dd>
+											<dt>素材</dt>
+											<dd><?php echo post_custom('Material'); ?></dd>
+											<dt>価格</dt>
+											<dd><i><strong><?php echo getProductPrice('Price'); ?></strong></i></dd>
+											<dt>商品説明</dt>
+											<dd style="white-space: break-spaces"><?php echo post_custom('Description'); ?></dd>
+										</dl>
+										<div class="cart-btn">
+											<input type="checkbox" 
+												id=<?echo 'cart'.$loopcounter;?> 
+												onchange="ChangeCartStatus(<?echo $loopcounter?>, 'cart')"
+											/>
+											<label for=<?echo 'cart'.$loopcounter;?> >お試し商品に追加</label>&nbsp;&nbsp;<br>
+											<p>※1点まで追加できます。</p>
+										</div>
+									</div>
+								</div>	
+							</div>
+						<!-- end -->
+						</div>
+					</div>
+				</div>
+			</div>
+			<?php endwhile; ?>
+		<?php else: ?>
+	<?php endif; ?>
 
 	<div id="cased4" style="margin-top: 100px">
       <a onclick="GotoForm()">申込みフォー厶へ</a>
     </div>
-
-	<div class="page-top js-pageTop"><span></span></div>
 </section>
 
 
@@ -212,8 +271,6 @@
 	}
 
 	function SelectProduct(id){
-		$(`#product-detail .detail-view`).addClass("d-none");
-		$(`#product-detail .detail-view${id}`).removeClass("d-none");
 		if($(`#product-detail .detail-view${id} #cased11`).hasClass("slick-slider") == false){
 			$(`.detail-view${id} #cased11`).slick({
 				infinite: true,
@@ -233,6 +290,15 @@
 				nextArrow: '<div id="cased1r"></div>'
 			});
 		}
+		var modal = new bootstrap.Modal($(`.modal${id}`), {
+			keyboard: false
+		})
+		modal.show();
+		$(`.modal${id}`).on('shown.bs.modal', (e) => {
+			$(`.detail-view${id} #cased11`).slick('setPosition');
+			$(`.detail-view${id} #cased11_thumbnail`).slick('setPosition');
+			$(`.detail-view${id} #cased1`).addClass('open');
+		})
 	}
 
 	function GotoForm(){
@@ -265,38 +331,6 @@
 		}
 	}
 
-
-	$(".product__card").on('click', function(e) {
-		if (this.hash !== "") {
-			e.preventDefault();
-			var hash = this.hash;
-			$('html, body').animate({
-				scrollTop: $(hash).offset().top
-			}, 300);
-			window.location.hash = hash;
-		} // End if
-	});
-
-	 // Trigger Pagetop
-	var triggerPageTop = function() {
-		var $pageTop = $('.js-pageTop');
-		if ($(this).scrollTop() > 200) {
-			$pageTop.addClass('active');
-		} else {
-			$pageTop.removeClass('active');
-		}
-	}  
-
-	// Animation scroll to top
-	var clickPageTop = function() {
-		var $pageTop = $('.js-pageTop');
-		$pageTop.click(function(e) {
-			$('html,body').animate({ scrollTop: 0 }, 300);
-		});
-	}
-
-
-
 	$(function(){
 		// ------------------- initial  slider  ------------------ //
 		const ua = navigator.userAgent;
@@ -319,20 +353,10 @@
 				}
 			}
 		});
-		// -------------------------------------------------------- //
 
 		if(window.location.hash) {
 			SelectProduct(window.location.hash);
-		} else {
-			SelectProduct('#'+$(`#product-detail .detail-view`).first().attr('id'));
 		}
-
-		triggerPageTop();
-		clickPageTop();
-
-		$(window).scroll(function() {
-			triggerPageTop();
-		});
 	});
 	let lazyObjectObserver = new IntersectionObserver(function(entries, observer) {
         entries.forEach(function(entry) {
