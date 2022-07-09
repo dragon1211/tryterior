@@ -25,8 +25,8 @@
 
 								$orderByPrice = $_GET["orderByPrice"] ?? "";
 
-								$orderPriceASCQuery = http_build_query( array_merge( $_GET, array( 'orderByPrice' => 'ASC' ) ) ); 
-								$orderPriceDESCQuery = http_build_query( array_merge( $_GET, array( 'orderByPrice' => 'DESC' ) ) ); 
+								$orderByPriceASCQuery = http_build_query( array_merge( $_GET, array( 'orderByPrice' => 'ASC' ) ) );
+								$orderByPriceDESCQuery = http_build_query( array_merge( $_GET, array( 'orderByPrice' => 'DESC' ) ) );
 							?>
 							<li>
 								<a href="/lpa/item" class = <?php if($term === "") echo "active"; ?> >  
@@ -37,7 +37,6 @@
 								$categories = get_terms( [
 									'taxonomy'     => "product_category",
 									'order'        => 'ASC',
-									'orderby'      => 'date',
 								] );
 								foreach($categories as $cat){
 							?>
@@ -63,7 +62,6 @@
 								$brands = get_terms( [
 									'taxonomy'     => "product_brand",
 									'order'        => 'ASC',
-									'orderby'      => 'date',
 								] );
 								foreach($brands as $brand){
 							?>
@@ -86,13 +84,13 @@
 					<div id="accordion-item-order" class="accordion-collapse collapse show">
 						<ul class="accordion-body d-flex">
 							<li style="margin-right: 15px">
-								<a 	href=<?php echo "?".$orderPriceDESCQuery?>
+								<a 	href=<?php echo "?".$orderByPriceDESCQuery?>
 									class=<?php if(strcmp($_GET['orderByPrice'], "DESC") == 0) echo 'active'; ?>
 								>安い順
 								</a>
 							</li>
 							<li>
-								<a  href=<?php echo "?".$orderPriceASCQuery?>
+								<a  href=<?php echo "?".$orderByPriceASCQuery?>
 								 	class=<?php if(strcmp($_GET['orderByPrice'], "ASC") == 0) echo 'active'; ?>
 								>高い順</a>
 							</li>
@@ -109,15 +107,12 @@
 				$args = array(
 					'post_type' => 'product',
 					'posts_per_page' => -1,
-					'orderby' => 'publish_date',
 					'order' => 'DESC',
 				);
 			} else {
 				$args = array(
 					'post_type' => 'product',
 					'posts_per_page' => -1,
-					'orderby' => 'publish_date',
-					'order' => 'DESC',
 					'tax_query' => array(
 						'relation' => 'OR',
 						array(
@@ -139,18 +134,19 @@
 			if($orderByPrice != '') {
 				$args['orderby'] = 'meta_value_num';
 				$args['order'] = $orderByPrice;
-				array_merge($args, ['meta_key' => '_description']);
+				$args['meta_key'] = 'price';
 			}
 		?>
+
 		<?php $i = 0; ?>
 		<?php $wp_query = new WP_Query( $args ); ?>
 		<?php if( $wp_query->have_posts() ) : ?>
 			<div class="product__list p-slider">
 				<?php $loopcounter = -1; while ($wp_query->have_posts()) : $wp_query->the_post(); $loopcounter ++; ?>
 					<div class="position-relative d-none">
-						<a	href="#<?php echo get_post_field('post_name',get_post())?>"
+						<a	href="#<?php echo get_post_field('post_name', get_post())?>"
 							class="product__card"
-							onclick="SelectProduct('#<?php echo get_post_field('post_name',get_post())?>')"
+							onclick="SelectProduct('#<?php echo get_post_field('post_name', get_post())?>')"
 						>
 							<div class="product__item" id=<? echo 'item'.$loopcounter ?>>
 								<?php
