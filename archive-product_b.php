@@ -86,13 +86,13 @@
 							<li style="margin-right: 15px">
 								<a 	href=<?php echo "?".$orderByPriceDESCQuery?>
 									class=<?php if(strcmp($_GET['orderByPrice'], "DESC") == 0) echo 'active'; ?>
-								>安い順
+								>高い順
 								</a>
 							</li>
 							<li>
 								<a  href=<?php echo "?".$orderByPriceASCQuery?>
 								 	class=<?php if(strcmp($_GET['orderByPrice'], "ASC") == 0) echo 'active'; ?>
-								>高い順</a>
+								>安い順</a>
 							</li>
 						</ul>
 					</div>
